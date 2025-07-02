@@ -38,7 +38,7 @@ const StudentSchema: Schema<IStudent> = new Schema(
           min: 0,
           max: 100,
         },
-        numberOfQuestion: {
+        numberOfQuestions: {
           type: Number,
           required: true,
         },
