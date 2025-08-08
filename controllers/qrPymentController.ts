@@ -64,7 +64,6 @@ class QrPaymentController {
         const combinedSvg = `
         <svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
           <g>${qrCodeSvg}</g>
-          <g>${textSvg}</g> 
         </svg>
       `;
 
