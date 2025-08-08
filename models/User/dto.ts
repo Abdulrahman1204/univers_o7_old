@@ -6,7 +6,7 @@ export interface IUser extends Document {
   userName: string;
   age: number;
   phoneNumber: string;
-  password: string;www
+  password: string;
   gender?: "male" | "female";
   role: "admin" | "superAdmin" | "sales";
 }
