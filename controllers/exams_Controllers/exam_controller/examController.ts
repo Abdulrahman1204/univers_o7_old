@@ -146,9 +146,19 @@ class ExamController {
       try {
         const { id } = req.params;
 
-        const exam = await Exam.findById(id).populate({
-          path: "questions",
-        });
+        const exam = await Exam.findById(id)
+          .populate({
+            path: "questions",
+          })
+          .populate({
+            path: "units",
+          })
+          .populate({
+            path: "teacher",
+            populate: {
+              path: "subject",
+            },
+          });
 
         if (!exam) {
           res.status(404).json({ message: "Exam not found" });
@@ -188,32 +198,32 @@ class ExamController {
 
         const { error } = validateAddExams({ exams });
         if (error) {
-           res.status(400).json({ message: error.details[0].message });
-           return;
+          res.status(400).json({ message: error.details[0].message });
+          return;
         }
 
         const student = await Student.findById(user?.id);
         if (!student) {
-           res.status(404).json({ message: "Student not found" });
-           return;
+          res.status(404).json({ message: "Student not found" });
+          return;
         }
 
         for (const exam of exams) {
           const subjectExists = await Subject.findById(exam.subjectId);
           if (!subjectExists) {
-             res
+            res
               .status(400)
               .json({ message: `Subject with ID ${exam.subjectId} not found` });
-              return;
+            return;
           }
 
           for (const unitId of exam.units) {
             const unitExists = await Unit.findById(unitId);
             if (!unitExists) {
-               res
+              res
                 .status(400)
                 .json({ message: `Unit with ID ${unitId} not found` });
-                return;
+              return;
             }
           }
         }

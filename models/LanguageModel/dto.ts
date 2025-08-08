@@ -16,7 +16,7 @@ export interface ILanguage extends Document {
 export interface ILQuestion extends Document {
   level: Types.ObjectId;
   text: string;
-  type: 'listens'
+  type: "listens";
 }
 
 // Empty Question Interface
@@ -24,7 +24,6 @@ export interface IEQuestion extends Document {
   level: Types.ObjectId;
   text: string;
   type: "emptes";
-  word: string;
   correct: string;
   firstAnswer: string;
   secondAnswer: string;
@@ -36,8 +35,9 @@ export interface IEQuestion extends Document {
 export interface IMeanQuestion extends Document {
   level: Types.ObjectId;
   text: string;
-  type:"means";
+  type: "means";
   correct: string;
+  word: string;
   firstAnswer: string;
   secondAnswer: string;
   thirdAnswer: string;
@@ -55,5 +55,5 @@ export interface IRTQuestion extends Document {
 export interface RankingQuesiton extends Document {
   level: Types.ObjectId;
   text: string;
-  type: "rank"
+  type: "rank";
 }

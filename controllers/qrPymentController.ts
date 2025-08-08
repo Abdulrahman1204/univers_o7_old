@@ -7,8 +7,7 @@ import { Unit } from "../models/ExamModel/Unit/Unit";
 import QRCode from "qrcode";
 import { Student } from "../models/User/Students";
 import { AuthenticatedRequest } from "../utils/types";
-import { Language } from "../models/LanguageModel/Language";
-
+import { Level } from "../models/LanguageModel/Level";
 class QrPaymentController {
   /**-----------------------------------------------
  * @desc    Generate Qr Code
@@ -26,12 +25,12 @@ class QrPaymentController {
           entity = await Course.findById(id);
         } else if (type === "unit") {
           entity = await Unit.findById(id);
-        }else if (type === "language") {
-          entity = await Language.findById(id);
+        } else if (type === "level") {
+          entity = await Level.findById(id);
         } else {
-          res
-            .status(400)
-            .json({ message: "Invalid type. Must be 'course' or 'unit' or 'language'." });
+          res.status(400).json({
+            message: "Invalid type. Must be 'course' or 'unit' or 'language'.",
+          });
           return;
         }
 
@@ -69,7 +68,6 @@ class QrPaymentController {
         </svg>
       `;
 
-
         const qrPayment = new QrPayment({
           type,
           entityId: entity._id,
@@ -98,7 +96,7 @@ class QrPaymentController {
     }
   );
 
-    /**-----------------------------------------------
+  /**-----------------------------------------------
  * @desc    purchase Unit
  * @route   /api/generate-qr/unit/678fa3956bf4e82dc547438e
  * @method  POST
@@ -108,38 +106,38 @@ class QrPaymentController {
     async (req: Request, res: Response): Promise<void> => {
       try {
         const { qrData } = req.body;
-  
+
         const { type, entityId, uniqueCode } = JSON.parse(qrData);
-  
+
         const qrPayment = await QrPayment.findOne({
           entityId,
           uniqueCode,
           used: false,
         });
-  
+
         if (!qrPayment) {
           res.status(400).json({ message: "Invalid or already used QR code." });
           return;
         }
-  
+
         qrPayment.used = true;
         await qrPayment.save();
-  
+
         const { user } = req as AuthenticatedRequest;
         const student = await Student.findById(user?.id);
-  
+
         if (!student) {
           res.status(404).json({ message: "Student not found." });
           return;
         }
-  
+
         if (type === "course") {
           const course = await Course.findById(entityId);
           if (!course) {
             res.status(404).json({ message: "Course not found." });
             return;
           }
-  
+
           await Student.findByIdAndUpdate(
             user?.id,
             {
@@ -147,7 +145,7 @@ class QrPaymentController {
             },
             { new: true }
           );
-  
+
           res.status(200).json({ message: "Course purchased successfully." });
         } else if (type === "unit") {
           const unit = await Unit.findById(entityId);
@@ -155,7 +153,7 @@ class QrPaymentController {
             res.status(404).json({ message: "Unit not found." });
             return;
           }
-  
+
           await Student.findByIdAndUpdate(
             user?.id,
             {
@@ -163,26 +161,28 @@ class QrPaymentController {
             },
             { new: true }
           );
-  
+
           res.status(200).json({ message: "Unit purchased successfully." });
-        }else if (type === "language") {
-          const language = await Language.findById(entityId);
-          if (!language) {
-            res.status(404).json({ message: "Language not found." });
+        } else if (type === "level") {
+          const level = await Level.findById(entityId);
+          if (!level) {
+            res.status(404).json({ message: "Level not found." });
             return;
           }
-  
+
           await Student.findByIdAndUpdate(
             user?.id,
             {
-              $push: { purchasedLanguages: language._id },
+              $push: { purchasedLanguages: level._id },
             },
             { new: true }
           );
-  
-          res.status(200).json({ message: "Language purchased successfully." });
+
+          res.status(200).json({ message: "Level purchased successfully." });
         } else {
-          res.status(400).json({ message: "Invalid type. Must be 'course' or 'unit' or 'language'." });
+          res.status(400).json({
+            message: "Invalid type. Must be 'course' or 'unit' or 'level'.",
+          });
         }
       } catch (err: unknown) {
         if (err instanceof Error) {

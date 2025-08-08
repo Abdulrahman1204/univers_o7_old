@@ -17,7 +17,11 @@ const MQuestionSchema: Schema<IMeanQuestion> = new Schema(
     },
     type: {
       type: String,
-      default: "means"
+      default: "means",
+    },
+    word: {
+      type: String,
+      required: true,
     },
     correct: {
       type: String,
@@ -67,6 +71,7 @@ const validateEQuestionCreate = (obj: any): joi.ValidationResult => {
     level: joi.string().required(),
     text: joi.string().min(0).required(),
     correct: joi.string().min(0).max(100).required(),
+    word: joi.string(),
     firstAnswer: joi.string().min(0).max(100).required(),
     secondAnswer: joi.string().min(0).max(100).required(),
     thirdAnswer: joi.string().min(0).max(100).required(),
@@ -80,6 +85,7 @@ const validateEQuestionUpdate = (obj: any): joi.ValidationResult => {
   const schema: ObjectSchema = joi.object({
     text: joi.string().min(0),
     correct: joi.string().min(0).max(100),
+    word: joi.string(),
     firstAnswer: joi.string().min(0).max(100),
     secondAnswer: joi.string().min(0).max(100),
     thirdAnswer: joi.string().min(0).max(100),

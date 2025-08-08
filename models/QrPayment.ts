@@ -13,7 +13,7 @@ const QrPaymentSchema: Schema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ["course", "unit"],
+      enum: ["course", "unit", "level"],
     },
     entityId: { 
       type: Schema.Types.ObjectId,
@@ -40,7 +40,7 @@ const QrPayment = mongoose.model<IQrPayment>("QrPayment", QrPaymentSchema);
 // validation Schemas
 const validateQrCreate = (obj: any): joi.ValidationResult => {
   const schema: ObjectSchema = joi.object({
-    type: joi.string().valid("course", "unit").required(),
+    type: joi.string().valid("course", "unit", "level").required(),
     unitId: joi.string().trim().required(),
     uniqueCode: joi.string().trim().required(),
   });

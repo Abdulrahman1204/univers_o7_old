@@ -34,6 +34,12 @@ class ProfileController {
               populate: {
                 path: "comments",
               },
+            })
+            .populate({
+              path: "exams",
+              populate: {
+                path: "subjectId units",
+              },
             }));
 
         if (!entity) {
@@ -79,7 +85,9 @@ class ProfileController {
 
         await (entity instanceof User
           ? User.findByIdAndDelete(id)
-          : Teacher.findByIdAndDelete(id));
+          : entity instanceof Teacher
+          ? Teacher.findByIdAndDelete(id)
+          : Student.findByIdAndDelete(id));
 
         res.status(200).json({ message: "Deleted successfully" });
       } catch (err: unknown) {
@@ -114,7 +122,9 @@ class ProfileController {
         const user = req.params.id;
 
         const entity =
-          (await User.findById(user)) || (await Teacher.findById(user));
+          (await User.findById(user)) ||
+          (await Teacher.findById(user)) ||
+          (await Student.findById(user));
 
         if (!entity) {
           res.status(400).json({ message: "Profile not found" });
@@ -130,7 +140,9 @@ class ProfileController {
 
         await (entity instanceof User
           ? User.findByIdAndUpdate(user, { $set: updatedData })
-          : Teacher.findByIdAndUpdate(user, { $set: updatedData }));
+          : entity instanceof Teacher
+          ? Teacher.findByIdAndUpdate(user, { $set: updatedData })
+          : Student.findByIdAndUpdate(user, { $set: updatedData }));
 
         res.status(200).json({ message: "Updated successfully" });
       } catch (err: unknown) {

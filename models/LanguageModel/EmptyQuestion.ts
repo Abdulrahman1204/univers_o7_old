@@ -19,10 +19,6 @@ const EQuestionSchema: Schema<IEQuestion> = new Schema(
       type: String,
       default: "emptes",
     },
-    word: {
-      type: String,
-      required: true,
-    },
     correct: {
       type: String,
       required: true,
@@ -71,7 +67,6 @@ const validateEQuestionCreate = (obj: any): joi.ValidationResult => {
     level: joi.string().required(),
     text: joi.string().min(0).required(),
     correct: joi.string().min(0).max(100).required(),
-    word: joi.string().required(),
     firstAnswer: joi.string().min(0).max(100).required(),
     secondAnswer: joi.string().min(0).max(100).required(),
     thirdAnswer: joi.string().min(0).max(100).required(),
@@ -86,7 +81,6 @@ const validateEQuestionUpdate = (obj: any): joi.ValidationResult => {
     text: joi.string().min(0),
     correct: joi.string().min(0).max(100),
     firstAnswer: joi.string().min(0).max(100),
-    word: joi.string(),
     secondAnswer: joi.string().min(0).max(100),
     thirdAnswer: joi.string().min(0).max(100),
     forthAnswer: joi.string().min(0).max(100),
